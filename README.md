@@ -1,1 +1,1 @@
-# unwinnable-tic-tac-toe
+# Unwinnable Tic-Tac-Toe
