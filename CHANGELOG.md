@@ -4,3 +4,7 @@
 - A function that displays the board
 - The ability for the player to choose whether they are X or O
 - The ability for the player to place a piece on the board
+## 2020-12-17
+### Added
+- A function that checks whether the game has been won or if it has been tied
+- The program is now a fully functional 2-player Tic-Tac-Toe game
