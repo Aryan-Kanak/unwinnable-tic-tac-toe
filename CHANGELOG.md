@@ -8,3 +8,8 @@
 ### Added
 - A function that checks whether the game has been won or if it has been tied
 - The program is now a fully functional 2-player Tic-Tac-Toe game
+## 2020-12-18
+### Added
+- A function that finds the best move
+### Changed
+- The program is now an unwinnable Tic-Tac-Toe AI
