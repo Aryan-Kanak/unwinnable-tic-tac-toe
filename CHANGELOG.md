@@ -13,3 +13,7 @@
 - A function that finds the best move
 ### Changed
 - The program is now an unwinnable Tic-Tac-Toe AI
+## 2020-12-19
+### Changed
+- Algorithm was made more efficient using alpha-beta pruning
+- Changed welcome message
