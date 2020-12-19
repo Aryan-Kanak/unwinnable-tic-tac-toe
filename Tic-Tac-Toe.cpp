@@ -11,7 +11,7 @@ void playerTurn(char(&board)[3][3], char player);
 void computerTurn(char(&board)[3][3], char computer, char player);
 vector <int> findBestMove(char board[3][3], char computer, char player);
 vector <vector <int>> findPossibleMoves(char board[3][3]);
-int evaluateBoard(char board[3][3], char computer, char player, bool isComputerTurn);
+int evaluateBoard(char board[3][3], char computer, char player, int alpha, int beta, bool isComputerTurn);
 char gameOutcome(char board[3][3]);
 char gameLoop(char(&board)[3][3], char player, char computer);
 
@@ -21,7 +21,7 @@ int main()
 	string playerStr;
 
 	// description of program
-	cout << "Welcome to Tic-Tac-Toe! Enter whether you want to be X or O. X will go first." << endl;
+	cout << "Welcome to Unwinnable Tic-Tac-Toe! Enter whether you want to be X or O. X will go first." << endl;
 
 	// select player's piece
 	while (true)
@@ -156,16 +156,14 @@ vector <int> findBestMove(char board[3][3], char computer, char player)
 	vector <vector <int>> possibleMoves = findPossibleMoves(board);
 
 	// determine the best move
-	vector <int> bestMove = possibleMoves[0];
-	board[possibleMoves[0][0]][possibleMoves[0][1]] = computer;
-	int bestMoveEval = evaluateBoard(board, computer, player, false);
-	board[possibleMoves[0][0]][possibleMoves[0][1]] = ' ';
+	vector <int> bestMove;
+	int bestMoveEval = -2;
 
 	int currMoveEval;
-	for (int i = 1; i < possibleMoves.size(); i++)
+	for (int i = 0; i < possibleMoves.size(); i++)
 	{
 		board[possibleMoves[i][0]][possibleMoves[i][1]] = computer;
-		currMoveEval = evaluateBoard(board, computer, player, false);
+		currMoveEval = evaluateBoard(board, computer, player, -2, 2, false);
 		if (currMoveEval > bestMoveEval)
 		{
 			bestMove = possibleMoves[i];
@@ -199,7 +197,7 @@ vector <vector <int>> findPossibleMoves(char board[3][3])
 }
 
 // evaluate state of the board
-int evaluateBoard(char board[3][3], char computer, char player, bool isComputerTurn)
+int evaluateBoard(char board[3][3], char computer, char player, int alpha, int beta, bool isComputerTurn)
 {
 	char outcome = gameOutcome(board);
 	// if computer has won
@@ -222,32 +220,43 @@ int evaluateBoard(char board[3][3], char computer, char player, bool isComputerT
 	{
 		vector <vector <int>> possibleMoves = findPossibleMoves(board);
 		int bestEval;
+		int currEval;
 
 		// evaluate all possible moves and find the best one
 		// if it is the computer's turn
 		if (isComputerTurn)
 		{
-			board[possibleMoves[0][0]][possibleMoves[0][1]] = computer;
-			bestEval = evaluateBoard(board, computer, player, !isComputerTurn);
-			board[possibleMoves[0][0]][possibleMoves[0][1]] = ' ';
+			bestEval = -2;
 			for (int i = 0; i < possibleMoves.size(); i++)
 			{
 				board[possibleMoves[i][0]][possibleMoves[i][1]] = computer;
-				bestEval = max(bestEval, evaluateBoard(board, computer, player, !isComputerTurn));
+				currEval = evaluateBoard(board, computer, player, alpha, beta, !isComputerTurn);
+				bestEval = max(bestEval, currEval);
 				board[possibleMoves[i][0]][possibleMoves[i][1]] = ' ';
+				// alpha-beta pruning
+				alpha = max(alpha, currEval);
+				if (beta <= alpha)
+				{
+					break;
+				}
 			}
 		}
 		// if it is the player's turn
 		else
 		{
-			board[possibleMoves[0][0]][possibleMoves[0][1]] = player;
-			bestEval = evaluateBoard(board, computer, player, !isComputerTurn);
-			board[possibleMoves[0][0]][possibleMoves[0][1]] = ' ';
+			bestEval = 2;
 			for (int i = 0; i < possibleMoves.size(); i++)
 			{
 				board[possibleMoves[i][0]][possibleMoves[i][1]] = player;
-				bestEval = min(bestEval, evaluateBoard(board, computer, player, !isComputerTurn));
+				currEval = evaluateBoard(board, computer, player, alpha, beta, !isComputerTurn);
+				bestEval = min(bestEval, currEval);
 				board[possibleMoves[i][0]][possibleMoves[i][1]] = ' ';
+				// alpha-beta pruning
+				beta = min(beta, currEval);
+				if (beta <= alpha)
+				{
+					break;
+				}
 			}
 		}
 
