@@ -1,2 +1,2 @@
 # Unwinnable Tic-Tac-Toe
-An Unwinnable Tic-Tac-Toe AI created in C++ using the minimax algorithm.
+An unwinnable Tic-Tac-Toe AI written in C++ using the minimax algorithm.
